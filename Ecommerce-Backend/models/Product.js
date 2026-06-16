@@ -1,44 +1,33 @@
-const mongoose = require('mongoose');
+const { ObjectId } = require('mongodb');
+const { getDB } = require('../config/db');
 
-const productSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: String,
-      required: true,
-    },
-    price: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    category: {
-      type: String,
-      required: true,
-    },
-    stock: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    image: {
-      type: String,
-      required: true,
-    },
-    rating: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+const productCollection = () => getDB().collection('products');
 
-const Product = mongoose.model('Product', productSchema);
+const getAllProducts = async () => {
+  return await productCollection().find({}).toArray();
+};
 
-module.exports = Product;
+const getProductById = async (id) => {
+  return await productCollection().findOne({ _id: new ObjectId(id) });
+};
+
+const createProduct = async (product) => {
+  const result = await productCollection().insertOne(product);
+  return result.insertedId;
+};
+
+const updateProduct = async (id, updated) => {
+  await productCollection().updateOne({ _id: new ObjectId(id) }, { $set: updated });
+};
+
+const deleteProduct = async (id) => {
+  await productCollection().deleteOne({ _id: new ObjectId(id) });
+};
+
+module.exports = {
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+};
