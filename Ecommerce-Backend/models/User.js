@@ -1,39 +1,30 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+const {ObjectId} = require('mongodb');
+const {getDB} = require('../config/db');
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+const userCollection = () => getDB().collection('users');
 
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    next();
-  }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
-
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+const createUser = async (user) => {
+  const result = await userCollection().insertOne(user);
+  return result.insertedId;
 };
 
-const User = mongoose.model('User', userSchema);
+const getAllUsers = async () => {
+  return await userCollection().find({}).toArray();
+};
+const getUserById = async (id) => {
+  return await userCollection().findOne({_id: new ObjectId(id)});
+};
+const updateUser = async (id, updatedUser) => {
+  await userCollection().updateOne({_id: new ObjectId(id)}, {$set: updatedUser});
+};
+const deleteUser = async (id) => {
+  await userCollection().deleteOne({_id: new ObjectId(id)});
+};
+module.exports = {
+  createUser,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+};  
 
-module.exports = User;
