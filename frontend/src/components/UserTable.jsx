@@ -42,7 +42,7 @@ setFormData({
 const handleSubmit = async (e) => {
 e.preventDefault();
 
-```
+
 try {
   if (editingId) {
     await userAPI.update(editingId, formData);
@@ -73,21 +73,21 @@ try {
   console.error(err);
   setError("Operation failed");
 }
-```
+
 
 };
 
 const handleEdit = (user) => {
 setEditingId(user._id);
 
-```
+
 setFormData({
   name: user.name,
   email: user.email,
   phone: user.phone,
   address: user.address,
 });
-```
+
 
 };
 
@@ -96,7 +96,7 @@ const confirmDelete = window.confirm(
 "Delete this user?"
 );
 
-```
+
 if (!confirmDelete) return;
 
 try {
@@ -111,7 +111,7 @@ try {
   console.error(err);
   setError("Failed to delete user");
 }
-```
+
 
 };
 

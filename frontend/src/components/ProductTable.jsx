@@ -93,7 +93,7 @@ const handleSubmit = async (e) => {
 const handleEdit = (product) => {
 setEditingId(product._id);
 
-```
+
 setFormData({
   name: product.name,
   description:
@@ -102,36 +102,32 @@ setFormData({
   stock: product.stock,
   category: product.category,
 });
-```
+
 
 };
 
 const handleDelete = async (id) => {
-const confirmDelete =
-window.confirm(
-"Delete this product?"
-);
-
-```
-if (!confirmDelete) return;
-
-try {
-  await productAPI.delete(id);
-
-  setProducts(
-    products.filter(
-      (product) =>
-        product._id !== id
-    )
+  const confirmDelete = window.confirm(
+    "Delete this product?"
   );
-} catch (err) {
-  console.error(err);
-  setError(
-    "Failed to delete product"
-  );
-}
-```
 
+  if (!confirmDelete) return;
+
+  try {
+    await productAPI.delete(id);
+
+    setProducts(
+      products.filter(
+        (product) =>
+          product._id !== id
+      )
+    );
+  } catch (err) {
+    console.error(err);
+    setError(
+      "Failed to delete product"
+    );
+  }
 };
 
 if (loading) {
