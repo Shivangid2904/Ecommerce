@@ -3,15 +3,15 @@
 This is a complete backend-only E-commerce REST API built with Node.js, Express.js, MongoDB, and Mongoose.
 
 ## Tech Stack
-- **Node.js** & **Express.js** for the server framework.
-- **MongoDB** & **Mongoose** for the database and object modeling.
-- **bcryptjs** for password hashing.
-- **jsonwebtoken** for authentication.
-- **dotenv** for environment variables.
+- Node.js & Express.js for the server
+- MongoDB & Mongoose for the database and object modeling
+- bcryptjs for password hashing
+- dotenv for environment variables
+- nodemon for development server reloads
 
 ## Installation
 
-1. Clone the repository and navigate into the folder:
+1. Open the backend folder:
    ```bash
    cd Ecommerce-Backend
    ```
@@ -22,36 +22,168 @@ This is a complete backend-only E-commerce REST API built with Node.js, Express.
 
 ## Environment Variables
 
-Create a `.env` file in the root directory and add the following variables:
+Create a `.env` file in the root directory with:
 ```
-PORT=5000
-MONGO_URI=<your_mongodb_connection_string>
-JWT_SECRET=<your_jwt_secret_key>
+PORT=5001
+MONGO_URI=mongodb://localhost:27017/ecommerce_db
+NODE_ENV=development
 ```
-*Note: Make sure your MongoDB service is running or use a MongoDB Atlas URI.*
 
-## How to Run Locally
+## Run Locally
 
-Start the server in development mode using nodemon:
+Start the server in development mode:
 ```bash
 npm run dev
 ```
 
-Or start it in production mode:
+Start in production mode:
 ```bash
 npm start
 ```
-The server will run on `http://localhost:5000`.
+
+By default the API will be available at `http://localhost:5001`.
+
+## Project Structure
+
+```
+Ecommerce-Backend/
+├── src/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── orderController.js
+│   │   ├── productController.js
+│   │   └── userController.js
+│   ├── middleware/
+│   │   ├── errorHandler.js
+│   │   └── validateRequest.js
+│   ├── models/
+│   │   ├── Order.js
+│   │   ├── Product.js
+│   │   └── User.js
+│   ├── routes/
+│   │   ├── orderRoutes.js
+│   │   ├── productRoutes.js
+│   │   └── userRoutes.js
+│   ├── app.js
+│   └── server.js
+├── .env
+├── package.json
+└── README.md
+```
 
 ## API Endpoints
 
 ### Users
-- `POST /api/users/register` - Register a new user
-- `POST /api/users/login` - Login user and get token
+- `POST /api/users` - Create a new user
+- `GET /api/users` - Get all users
+- `GET /api/users/:id` - Get a user by ID
+- `PUT /api/users/:id` - Update a user
+- `DELETE /api/users/:id` - Delete a user
 
 ### Products
+- `POST /api/products` - Create a product
 - `GET /api/products` - Get all products
-- `GET /api/products/:id` - Get single product by ID
-- `POST /api/products` - Create a product (Protected)
-- `PUT /api/products/:id` - Update a product (Protected)
-- `DELETE /api/products/:id` - Delete a product (Protected)
+- `GET /api/products/:id` - Get product by ID
+- `PUT /api/products/:id` - Update a product
+- `DELETE /api/products/:id` - Delete a product
+
+### Orders
+- `POST /api/orders` - Create an order
+- `GET /api/orders` - Get all orders
+- `GET /api/orders/:id` - Get order by ID
+- `PUT /api/orders/:id` - Update an order
+- `DELETE /api/orders/:id` - Delete an order
+
+## Sample Requests
+
+### Create User
+
+Request:
+```json
+POST /api/users
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "secret123"
+}
+```
+
+Response:
+```json
+HTTP/1.1 201 Created
+{
+  "id": "651d0d1f23fa2b1a0b345678",
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "createdAt": "2026-06-19T08:45:12.000Z"
+}
+```
+
+### Create Product
+
+Request:
+```json
+POST /api/products
+{
+  "name": "Basic T-Shirt",
+  "description": "Comfortable cotton tee",
+  "price": 19.99,
+  "stock": 100,
+  "category": "Apparel"
+}
+```
+
+Response:
+```json
+HTTP/1.1 201 Created
+{
+  "_id": "651d0d1f23fa2b1a0b345679",
+  "name": "Basic T-Shirt",
+  "description": "Comfortable cotton tee",
+  "price": 19.99,
+  "stock": 100,
+  "category": "Apparel",
+  "createdAt": "2026-06-19T08:45:12.000Z"
+}
+```
+
+### Create Order
+
+Request:
+```json
+POST /api/orders
+{
+  "userId": "651d0d1f23fa2b1a0b345678",
+  "products": [
+    {
+      "productId": "651d0d1f23fa2b1a0b345679",
+      "quantity": 2
+    }
+  ],
+  "totalAmount": 39.98,
+  "status": "Pending"
+}
+```
+
+Response:
+```json
+HTTP/1.1 201 Created
+{
+  "_id": "651d0d1f23fa2b1a0b345680",
+  "userId": "651d0d1f23fa2b1a0b345678",
+  "products": [
+    {
+      "productId": "651d0d1f23fa2b1a0b345679",
+      "quantity": 2
+    }
+  ],
+  "totalAmount": 39.98,
+  "status": "Pending",
+  "createdAt": "2026-06-19T08:45:12.000Z"
+}
+```
+
+## Postman Collection
+
+A Postman collection file has been added to the project as `Ecommerce-Backend.postman_collection.json`.
